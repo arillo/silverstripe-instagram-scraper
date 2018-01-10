@@ -33,19 +33,19 @@ You can run following tasks through the commandline (e.g. with cronjobs).
 ### Query by hashtag
 
 ```
-php framework/cli-script.php Arillo\InstagramScraper\Tasks\ScraperTask type=hashtag subject=<the_hashtag_to_query>
+php framework/cli-script.php dev/tasks/Arillo-InstagramScraper-Tasks-ScraperTask type=hashtag subject=<the_hashtag_to_query>
 ```
 
 ### Query by username
 
 ```
-php framework/cli-script.php Arillo\InstagramScraper\Tasks\ScraperTask type=username subject=<the_username_to_query>
+php framework/cli-script.php dev/tasks/Arillo-InstagramScraper-Tasks-ScraperTask type=username subject=<the_username_to_query>
 ```
 
 ### Query by location
 
 ```
-php framework/cli-script.php Arillo\InstagramScraper\Tasks\ScraperTask type=location subject=<instagram_location_id>
+php framework/cli-script.php dev/tasks/Arillo-InstagramScraper-Tasks-ScraperTask type=location subject=<instagram_location_id>
 ```
 
 Or you can run them via the dev/tasks section in your browser.
