@@ -28,6 +28,12 @@ class InstagramRecord extends DataObject
      */
     const TYPE_LOCATION = 'location';
 
+    /**
+     * list of available image dimensions.
+     * @var array
+     */
+    const IMAGE_DIMENSIONS = [ 150, 240, 320, 480, 640 ];
+
     private static
         $db = [
             'ExternalId' => 'Varchar(255)',
@@ -75,7 +81,7 @@ class InstagramRecord extends DataObject
 
     protected
         /**
-         * @var ArrayData
+         * @var array
          */
         $images = [],
 
@@ -90,7 +96,11 @@ class InstagramRecord extends DataObject
         $postViewPage = null
     ;
 
-    public static function feed_types()
+    /**
+     * Map of availabel feed types
+     * @return array
+     */
+    public static function feed_types(): array
     {
         $types = [
             self::TYPE_HASHTAG,
@@ -102,26 +112,42 @@ class InstagramRecord extends DataObject
     }
 
     /**
-     * Get records by subject and type
-     * @param  string $subject
-     * @param  string $type
+     * Get records by subject and type.
+     * Filter is optional, will override
+     *
+     * @param  string $subject  query
+     * @param  string $type     one of @see self::feed_types()
+     * @param  array $filter    filtering override
      * @return DataList
      */
-    public static function by_topic(string $subject, string $type = 'hashtag'): DataList
+    public static function by_topic(
+        string $subject,
+        string $type = self::TYPE_HASHTAG,
+        array $filter = []
+    ): DataList
     {
         return self::get()
-            ->filter([
-                'FeedSubject' => $subject,
-                'FeedType' => $type,
-            ])
+            ->filter(array_merge(
+                $filter,
+                [
+                    'FeedSubject' => $subject,
+                    'FeedType' => $type,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Text representation of current Status.
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->Hidden
+            ? _t('InstagramRecord.Deactivated', 'deactivated')
+            : _t('InstagramRecord.Active', 'active')
         ;
     }
-
-    public function getStatus()
-    {
-        return $this->Hidden ? 'deactivated' : 'active';
-    }
-
 
     public function getCMSFields()
     {
@@ -148,27 +174,29 @@ class InstagramRecord extends DataObject
         return $fields;
     }
 
+    /**
+     * Get a thumbnail image wrapped in HTMLText for CMS use.
+     * @return HTMLText
+     */
     public function getThumbnail(): HTMLText
     {
+        $txt = _t('InstagramRecord.NoImage', '(no image)');
+
         if ($img = $this->Image())
         {
-            return DBField::create_field(
-                'HTMLText',
-                "<img src='{$img->URL}' style='width: 150px;' />"
-            );
+            $txt = "<img src='{$img->URL}' style='width: 150px;' />";
         }
 
-        return '(no image)';
-
+        return DBField::create_field('HTMLText', $txt);
     }
 
     /**
      * Get image by dimension.
      *
-     * @param  integer $width 150, 240, 320, 480, 640
+     * @param  integer $width   one of @see self::IMAGE_DIMENSIONS
      * @return ArrayData
      */
-    public function Image($width = 150): ArrayData
+    public function Image($width = self::IMAGE_DIMENSIONS[0]): ArrayData
     {
         $defaultKey = 'display_url';
 
@@ -180,7 +208,8 @@ class InstagramRecord extends DataObject
                 ->query('$.thumbnail_resources')
             ;
 
-            if (!empty($resources))
+            // try to find requested image data in json.
+            if (!empty($resources) && in_array($width, self::IMAGE_DIMENSIONS))
             {
                 $resources = $resources[0];
                 $foundResource = ArrayList::create($resources)
@@ -197,8 +226,9 @@ class InstagramRecord extends DataObject
                     $this->images[$width] = $image;
                     return $image;
                 }
-
             }
+
+            // fallback to standard display image
             $url = $this
                 ->dbObject('Json')
                 ->setReturnType('silverstripe')
@@ -216,6 +246,11 @@ class InstagramRecord extends DataObject
         return $this->images[$width];
     }
 
+    /**
+     * Wrap caption from json in HTMLText.
+     *
+     * @return HTMLText
+     */
     public function getText(): HTMLText
     {
         if (!$this->text)
@@ -235,6 +270,11 @@ class InstagramRecord extends DataObject
         return $this->text;
     }
 
+    /**
+     * Get an image view (page) link.
+     *
+     * @return ArrayData
+     */
     public function getPostViewPage(): ArrayData
     {
         if (!$this->postViewPage)

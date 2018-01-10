@@ -50,6 +50,20 @@ php framework/cli-script.php Arillo\InstagramScraper\Tasks\ScraperTask type=loca
 
 Or you can run them via the dev/tasks section in your browser.
 
+### Work with instagram records
+
+```
+// get records by topic (subject & type)
+$records = InstagramRecord::by_topic(<subject>, <type>);
+
+// $records is a data list, the query can be modified...
+$records
+  ->exclude('Hidden', true)
+  ->limit(10)
+  ->sort('TakenAtTimestamp DESC')
+;
+```
+
 ## Notes
 
 * There might be problems to fetch data from Instagram caused by rate limiting.
