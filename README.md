@@ -42,7 +42,7 @@ php framework/cli-script.php Arillo\InstagramScraper\Tasks\ScraperTask type=hash
 php framework/cli-script.php Arillo\InstagramScraper\Tasks\ScraperTask type=username subject=<the_username_to_query>
 ```
 
-### Query by username
+### Query by location
 
 ```
 php framework/cli-script.php Arillo\InstagramScraper\Tasks\ScraperTask type=location subject=<instagram_location_id>
