@@ -10,7 +10,6 @@ use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * This class provides an access api to public Instagram data.
- * Partly borrowed from Smochin\Instagram\Crawler.
  *
  * @package instagram-scraper
  * @author bumbus <sf@arillo.net>

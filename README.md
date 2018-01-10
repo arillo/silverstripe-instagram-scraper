@@ -2,8 +2,8 @@
 
 ## Introduction
 
-This module provides a scraper task to fetch recent media records by hashtag,
-username and location. Records will are persisted in database (InstagramRecord).
+This module provides a scraper task to fetch recent records by hashtag, username
+and location. Records will are persisted in database (InstagramRecord).
 
 ## Requirements
 
@@ -52,16 +52,35 @@ Or you can run them via the dev/tasks section in your browser.
 
 ### Work with instagram records
 
-```
-// get records by topic (subject & type)
-$records = InstagramRecord::by_topic(<subject>, <type>);
+Fetch records by topic:
 
-// $records is a data list, the query can be modified...
-$records
-  ->exclude('Hidden', true)
-  ->limit(10)
-  ->sort('TakenAtTimestamp DESC')
-;
+```php
+public function getInstagramRecords()
+{
+  // get records by topic (subject & type)
+  $records = InstagramRecord::by_topic(<subject>, <type>);
+
+  // $records is a data list, the query can be modified...
+  return $records
+    ->exclude('Hidden', true)
+    ->limit(10)
+    ->sort('TakenAtTimestamp DESC')
+  ;
+}
+```
+
+Template usage example:
+
+```html
+<% if $InstagramRecords.Exists %>
+  <% loop $InstagramRecords %>
+    <div>
+      <a href="$PostViewPage.Link" title="$Text" target="_blank">
+        <img src="$Image('320').URL"  />
+      </a>
+    </div>
+  <% end_loop %>
+<% end_if %>
 ```
 
 ## Notes

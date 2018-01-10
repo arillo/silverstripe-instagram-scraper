@@ -117,7 +117,7 @@ class InstagramRecord extends DataObject
      *
      * @param  string $subject  query
      * @param  string $type     one of @see self::feed_types()
-     * @param  array $filter    filtering override
+     * @param  array $filter    filtering addition
      * @return DataList
      */
     public static function by_topic(
@@ -294,7 +294,6 @@ class InstagramRecord extends DataObject
 
         return $this->postViewPage;
     }
-
 
     public function canCreate($member = null)
     {
