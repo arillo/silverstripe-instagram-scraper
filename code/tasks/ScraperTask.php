@@ -3,6 +3,7 @@ namespace Arillo\InstagramScraper\Tasks;
 
 use Arillo\InstagramScraper\Crawler;
 use \BuildTask;
+use \DateTime;
 use \InstagramRecord;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -139,11 +140,15 @@ class ScraperTask extends BuildTask
                     case isset($instagramEntry['date']):
                         $takenAt = $instagramEntry['date'];
                         break;
+
+                    default:
+                        $takenAt = (new DateTime())->getTimestamp();
+                        break;
                 }
 
                 $instagramRecord->update([
                     'ExternalId' => $instagramEntry['id'],
-                    'TakenAtTimestamp' => $takenAt ? $takenAt : 'No date found',
+                    'TakenAtTimestamp' => $takenAt,
                     'FeedType' => $type,
                     'FeedSubject' => $subject,
                     'Json' => $json,

@@ -2,8 +2,8 @@
 
 ## Introduction
 
-This module provides a scraper task to fetch recent records by hashtag, username
-and location. Records will are persisted in database (InstagramRecord).
+This module provides a scraper task to fetch **recent** records by hashtag,
+username or location. Records will are persisted in database (InstagramRecord).
 
 ## Requirements
 
@@ -92,4 +92,4 @@ Template usage example:
 ## Contribute
 
 If you find a bug or you have feature request, please post an issue and/or send
-a merge request.
+a pull request.
