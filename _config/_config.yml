@@ -1,0 +1,3 @@
+LeftAndMain:
+  extensions:
+    - Arillo\InstagramScraper\CMS\LeftAndMainExtension
