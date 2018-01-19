@@ -56,6 +56,8 @@ class InstagramRecord extends DataObject
             ],
         ],
 
+        $default_sort = 'TakenAtTimestamp DESC',
+
         $defaults = [
             'FeedSubject' => self::TYPE_HASHTAG,
         ],
