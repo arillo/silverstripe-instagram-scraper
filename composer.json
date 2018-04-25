@@ -17,7 +17,7 @@
     "require": {
         "ext-json": "*",
         "guzzlehttp/guzzle": "^6.2",
-        "arillo/jsontext": "^1.0.2",
+        "phptek/jsontext": "^1.0.2",
         "colymba/gridfield-bulk-editing-tools": "2.1.x-dev",
         "nathancox/codeeditorfield": "^1.3"
     },
