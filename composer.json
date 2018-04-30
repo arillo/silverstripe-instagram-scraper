@@ -17,17 +17,12 @@
     "require": {
         "ext-json": "*",
         "guzzlehttp/guzzle": "^6.2",
-        "phptek/jsontext": "dev-dev",
+        "phptek/jsontext": "3.x-dev",
         "colymba/gridfield-bulk-editing-tools": "2.1.x-dev",
         "nathancox/codeeditorfield": "^1.3"
     },
     "support": {
         "issues":
             "https://github.com/arillo/silverstripe-instagram-scraper/issues"
-    },
-    "repositories": [
-    {
-      "type": "git",
-      "url": "git@github.com:arillo/silverstripe-jsontext.git"
-    }]  
+    }
 }
