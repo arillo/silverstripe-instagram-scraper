@@ -24,5 +24,11 @@
     "support": {
         "issues":
             "https://github.com/arillo/silverstripe-instagram-scraper/issues"
-    }
+    },
+    "repositories": [
+    {
+      "type": "git",
+      "url": "git@github.com:phptek/silverstripe-jsontext.git"
+    }]  
+
 }
