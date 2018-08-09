@@ -102,7 +102,7 @@ class InstagramRecord extends DataObject
      * Map of availabel feed types
      * @return array
      */
-    public static function feed_types(): array
+    public static function feed_types()
     {
         $types = [
             self::TYPE_HASHTAG,
@@ -126,8 +126,7 @@ class InstagramRecord extends DataObject
         string $subject,
         string $type = self::TYPE_HASHTAG,
         array $filter = []
-    ): DataList
-    {
+    ) {
         return self::get()
             ->filter(array_merge(
                 $filter,
@@ -143,7 +142,7 @@ class InstagramRecord extends DataObject
      * Text representation of current Status.
      * @return string
      */
-    public function getStatus(): string
+    public function getStatus()
     {
         return $this->Hidden
             ? _t('InstagramRecord.Deactivated', 'deactivated')
@@ -180,7 +179,7 @@ class InstagramRecord extends DataObject
      * Get a thumbnail image wrapped in HTMLText for CMS use.
      * @return HTMLText
      */
-    public function getThumbnail(): HTMLText
+    public function getThumbnail()
     {
         $txt = _t('InstagramRecord.NoImage', '(no image)');
 
@@ -198,7 +197,7 @@ class InstagramRecord extends DataObject
      * @param  integer $width   one of @see self::IMAGE_DIMENSIONS
      * @return ArrayData
      */
-    public function Image($width = self::IMAGE_DIMENSIONS[0]): ArrayData
+    public function Image($width = self::IMAGE_DIMENSIONS[0])
     {
         $defaultKey = 'display_url';
 
@@ -253,7 +252,7 @@ class InstagramRecord extends DataObject
      *
      * @return HTMLText
      */
-    public function getText(): HTMLText
+    public function getText()
     {
         if (!$this->text)
         {
@@ -277,7 +276,7 @@ class InstagramRecord extends DataObject
      *
      * @return ArrayData
      */
-    public function getPostViewPage(): ArrayData
+    public function getPostViewPage()
     {
         if (!$this->postViewPage)
         {

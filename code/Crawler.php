@@ -34,7 +34,7 @@ class Crawler
      * @param  string $shortCode
      * @return string
      */
-    public static function media_url_by_shortcode(string $shortCode): string
+    public static function media_url_by_shortcode(string $shortCode)
     {
         return self::BASE_URI . sprintf(self::MEDIA_ENDPOINT, $shortCode);
     }
@@ -54,7 +54,7 @@ class Crawler
      * @return array response body
      * @throws GuzzleException
      */
-    public function getByTag(string $name): array
+    public function getByTag(string $name)
     {
         $response = $this->client->request('GET', sprintf(self::TAG_ENDPOINT, $name));
         return json_decode($response->getBody()->getContents(), true);
@@ -67,7 +67,7 @@ class Crawler
      * @return array response body
      * @throws GuzzleException
      */
-    public function getByUsername(string $username): array
+    public function getByUsername(string $username)
     {
         $response = $this->client->request('GET', sprintf(self::USER_ENDPOINT, $username));
         return json_decode($response->getBody()->getContents(), true);
@@ -80,7 +80,7 @@ class Crawler
      * @return array response body
      * @throws GuzzleException
      */
-    public function getByLocation(int $id): array
+    public function getByLocation(int $id)
     {
         $response = $this->client->request('GET', sprintf(self::LOCATION_ENDPOINT, $id));
         return json_decode($response->getBody()->getContents(), true);
