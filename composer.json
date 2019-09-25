@@ -1,34 +1,36 @@
 {
-    "name": "arillo/silverstripe-instagram-scraper",
-    "description": "Instagram scraper module for Silverstripe",
-    "type": "silverstripe-module",
-    "homepage": "https://github.com/arillo/silverstripe-instagram-scraper",
-    "keywords": ["silverstripe", "instagram scraper"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Sebastian Fischer",
-            "email": "sf@arillo.net"
-        }
-    ],
-    "extra": {
-        "installer-name": "instagram-scraper"
-    },
-    "require": {
-        "ext-json": "*",
-        "guzzlehttp/guzzle": "^6.2",
-        "phptek/jsontext": "3.x-dev",
-        "colymba/gridfield-bulk-editing-tools": "2.1.x-dev",
-        "nathancox/codeeditorfield": "^1.3"
-    },
-    "support": {
-        "issues":
-            "https://github.com/arillo/silverstripe-instagram-scraper/issues"
-    },
-    "repositories": [
+  "name": "arillo/silverstripe-instagram-scraper",
+  "description": "Instagram scraper module for Silverstripe",
+  "type": "silverstripe-module",
+  "homepage": "https://github.com/arillo/silverstripe-instagram-scraper",
+  "keywords": [
+    "silverstripe",
+    "instagram scraper"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sebastian Fischer",
+      "email": "sf@arillo.net"
+    }
+  ],
+  "extra": {
+    "installer-name": "instagram-scraper"
+  },
+  "require": {
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "^6.2",
+    "phptek/jsontext": "1.0.2",
+    "colymba/gridfield-bulk-editing-tools": "2.1.x-dev",
+    "nathancox/codeeditorfield": "^1.3"
+  },
+  "support": {
+    "issues": "https://github.com/arillo/silverstripe-instagram-scraper/issues"
+  },
+  "repositories": [
     {
       "type": "git",
-      "url": "git@github.com:phptek/silverstripe-jsontext.git"
-    }]  
-
+      "url": "git@github.com:arillo/silverstripe-jsontext.git"
+    }
+  ]
 }
