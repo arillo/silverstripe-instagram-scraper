@@ -34,6 +34,13 @@ class InstagramRecord extends DataObject
      */
     const IMAGE_DIMENSIONS = [ 150, 240, 320, 480, 640 ];
 
+    /**
+     * list of available image sizes, from large to small
+     */
+    const IMAGE_SIZES = [ 'l', 'm', 't' ];
+
+    const SHORTCODE_URL_PATTERN = "https://instagram.com/p/%s/media/?size=%s";
+
     private static
         $db = [
             'ExternalId' => 'Varchar(255)',
@@ -78,7 +85,9 @@ class InstagramRecord extends DataObject
             'FeedType' => 'FeedType',
             'FeedSubject' => 'FeedSubject',
             'ExternalId' => 'ExternalId',
-        ]
+        ],
+
+        $image_mode = 'SHORTCODE'
     ;
 
     protected
@@ -182,9 +191,12 @@ class InstagramRecord extends DataObject
     public function getThumbnail()
     {
         $txt = _t('InstagramRecord.NoImage', '(no image)');
+        $width = $this->config()->image_mode == 'SHORTCODE'
+            ? self::IMAGE_SIZES[2]
+            : self::IMAGE_DIMENSIONS[0]
+        ;
 
-        if ($img = $this->Image())
-        {
+        if ($img = $this->Image($width)) {
             $txt = "<img src='{$img->URL}' style='width: 150px;' />";
         }
 
@@ -194,15 +206,65 @@ class InstagramRecord extends DataObject
     /**
      * Get image by dimension.
      *
-     * @param  integer $width   one of @see self::IMAGE_DIMENSIONS
+     * @param  mixed $width   one of @see self::IMAGE_DIMENSIONS || one of @see self::IMAGE_SIZES
      * @return ArrayData
      */
-    public function Image($width = self::IMAGE_DIMENSIONS[0])
+    public function Image($width)
+    {
+        switch ($this->config()->image_mode) {
+            case 'SHORTCODE': return $this->imageByShortCode($width);
+            default: return $this->imageByResources($width);
+        }
+    }
+
+    protected function imageByShortCode($width = self::IMAGE_SIZES[2])
+    {
+        $defaultKey = 'm';
+
+        if (!isset($this->images[$width])) {
+            $resources = $this
+                ->dbObject('Json')
+                ->setReturnType('array')
+                ->query('$.shortcode')
+            ;
+
+            // try to find requested image data in json.
+            if (
+                !empty($resources)
+                && in_array($width, self::IMAGE_SIZES)
+                && count($resources)
+            ) {
+                $image = ArrayData::create([
+                    'URL' => sprintf(self::SHORTCODE_URL_PATTERN, $resources[0], $width),
+                ]);
+
+                $this->images[$width] = $image;
+                return $image;
+            }
+
+            // fallback to standard display image
+            $url = $this
+                ->dbObject('Json')
+                ->setReturnType('silverstripe')
+                ->query('$.display_url')
+            ;
+
+            $image = ArrayData::create([
+                'URL' => empty($url) ? null : $url[0],
+            ]);
+
+            $this->images[$defaultKey] = $image;
+            return $image;
+        }
+
+        return $this->images[$width];
+    }
+
+    protected function imageByResources($width = self::IMAGE_DIMENSIONS[0])
     {
         $defaultKey = 'display_url';
 
-        if (!isset($this->images[$width]))
-        {
+        if (!isset($this->images[$width])) {
             $resources = $this
                 ->dbObject('Json')
                 ->setReturnType('array')
@@ -210,14 +272,12 @@ class InstagramRecord extends DataObject
             ;
 
             // try to find requested image data in json.
-            if (!empty($resources) && in_array($width, self::IMAGE_DIMENSIONS))
-            {
+            if (!empty($resources) && in_array($width, self::IMAGE_DIMENSIONS)) {
                 $resources = $resources[0];
                 $foundResource = ArrayList::create($resources)
                     ->find('config_width', $width);
 
-                if ($foundResource)
-                {
+                if ($foundResource) {
                     $image = ArrayData::create([
                         'URL' => $foundResource['src'],
                         'Width' => $foundResource['config_width'],
