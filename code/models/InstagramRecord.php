@@ -39,6 +39,9 @@ class InstagramRecord extends DataObject
      */
     const IMAGE_SIZES = [ 'l', 'm', 't' ];
 
+    /**
+     * url pattern to get images by shortcode and size.
+     */
     const SHORTCODE_URL_PATTERN = "https://instagram.com/p/%s/media/?size=%s";
 
     private static
@@ -217,96 +220,6 @@ class InstagramRecord extends DataObject
         }
     }
 
-    protected function imageByShortCode($width = self::IMAGE_SIZES[2])
-    {
-        $defaultKey = 'm';
-
-        if (!isset($this->images[$width])) {
-            $resources = $this
-                ->dbObject('Json')
-                ->setReturnType('array')
-                ->query('$.shortcode')
-            ;
-
-            // try to find requested image data in json.
-            if (
-                !empty($resources)
-                && in_array($width, self::IMAGE_SIZES)
-                && count($resources)
-            ) {
-                $image = ArrayData::create([
-                    'URL' => sprintf(self::SHORTCODE_URL_PATTERN, $resources[0], $width),
-                ]);
-
-                $this->images[$width] = $image;
-                return $image;
-            }
-
-            // fallback to standard display image
-            $url = $this
-                ->dbObject('Json')
-                ->setReturnType('silverstripe')
-                ->query('$.display_url')
-            ;
-
-            $image = ArrayData::create([
-                'URL' => empty($url) ? null : $url[0],
-            ]);
-
-            $this->images[$defaultKey] = $image;
-            return $image;
-        }
-
-        return $this->images[$width];
-    }
-
-    protected function imageByResources($width = self::IMAGE_DIMENSIONS[0])
-    {
-        $defaultKey = 'display_url';
-
-        if (!isset($this->images[$width])) {
-            $resources = $this
-                ->dbObject('Json')
-                ->setReturnType('array')
-                ->query('$.thumbnail_resources')
-            ;
-
-            // try to find requested image data in json.
-            if (!empty($resources) && in_array($width, self::IMAGE_DIMENSIONS)) {
-                $resources = $resources[0];
-                $foundResource = ArrayList::create($resources)
-                    ->find('config_width', $width);
-
-                if ($foundResource) {
-                    $image = ArrayData::create([
-                        'URL' => $foundResource['src'],
-                        'Width' => $foundResource['config_width'],
-                        'Height' => $foundResource['config_height'],
-                    ]);
-
-                    $this->images[$width] = $image;
-                    return $image;
-                }
-            }
-
-            // fallback to standard display image
-            $url = $this
-                ->dbObject('Json')
-                ->setReturnType('silverstripe')
-                ->query('$.display_url')
-            ;
-
-            $image = ArrayData::create([
-                'URL' => empty($url) ? null : $url[0],
-            ]);
-
-            $this->images[$defaultKey] = $image;
-            return $image;
-        }
-
-        return $this->images[$width];
-    }
-
     /**
      * Wrap caption from json in HTMLText.
      *
@@ -369,5 +282,105 @@ class InstagramRecord extends DataObject
     public function canDelete($member = null)
     {
         return $this->canCreate($member);
+    }
+
+    /**
+     * Get image by shortcode
+     * @param  string $width
+     * @return ArrayData
+     */
+    protected function imageByShortCode($width = self::IMAGE_SIZES[2])
+    {
+        $defaultKey = 'm';
+
+        if (!isset($this->images[$width])) {
+            $resources = $this
+                ->dbObject('Json')
+                ->setReturnType('array')
+                ->query('$.shortcode')
+            ;
+
+            // try to find requested image data in json.
+            if (
+                !empty($resources)
+                && in_array($width, self::IMAGE_SIZES)
+                && count($resources)
+            ) {
+                $image = ArrayData::create([
+                    'URL' => sprintf(self::SHORTCODE_URL_PATTERN, $resources[0], $width),
+                ]);
+
+                $this->images[$width] = $image;
+                return $image;
+            }
+
+            // fallback to standard display image
+            $url = $this
+                ->dbObject('Json')
+                ->setReturnType('silverstripe')
+                ->query('$.display_url')
+            ;
+
+            $image = ArrayData::create([
+                'URL' => empty($url) ? null : $url[0],
+            ]);
+
+            $this->images[$defaultKey] = $image;
+            return $image;
+        }
+
+        return $this->images[$width];
+    }
+
+    /**
+     * Get image by resources
+     * @param  int $width
+     * @return ArrayData
+     */
+    protected function imageByResources($width = self::IMAGE_DIMENSIONS[0])
+    {
+        $defaultKey = 'display_url';
+
+        if (!isset($this->images[$width])) {
+            $resources = $this
+                ->dbObject('Json')
+                ->setReturnType('array')
+                ->query('$.thumbnail_resources')
+            ;
+
+            // try to find requested image data in json.
+            if (!empty($resources) && in_array($width, self::IMAGE_DIMENSIONS)) {
+                $resources = $resources[0];
+                $foundResource = ArrayList::create($resources)
+                    ->find('config_width', $width);
+
+                if ($foundResource) {
+                    $image = ArrayData::create([
+                        'URL' => $foundResource['src'],
+                        'Width' => $foundResource['config_width'],
+                        'Height' => $foundResource['config_height'],
+                    ]);
+
+                    $this->images[$width] = $image;
+                    return $image;
+                }
+            }
+
+            // fallback to standard display image
+            $url = $this
+                ->dbObject('Json')
+                ->setReturnType('silverstripe')
+                ->query('$.display_url')
+            ;
+
+            $image = ArrayData::create([
+                'URL' => empty($url) ? null : $url[0],
+            ]);
+
+            $this->images[$defaultKey] = $image;
+            return $image;
+        }
+
+        return $this->images[$width];
     }
 }
